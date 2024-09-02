@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { Outlet } from "react-router-dom";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import UserContext from "./context/UserContext";
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { checkToken } from "./api/storage";
 
 function App() {
+  const [user, setUser] = useState(false);
+
+  useEffect(() => {
+    const token = checkToken();
+    if (token) {
+      setUser(true);
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={[user, setUser]}>
+      <div className="App font-mono ">
+        <h1>the user state is {`$user`}</h1>
+        <Navbar />
+        <Outlet />
+      </div>
+    </UserContext.Provider>
   );
 }
 
